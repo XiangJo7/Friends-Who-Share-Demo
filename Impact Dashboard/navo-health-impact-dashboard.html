@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navo Health · Clinical Evidence & Value Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f6ff;--bg2:#e6f0fb;--bg3:#daeaf8;--card:#fff;
+  --border:rgba(74,130,200,0.13);--border2:rgba(74,130,200,0.26);
+  --teal:#0e8f72;--teal-dim:rgba(14,143,114,0.08);--teal-mid:rgba(14,143,114,0.20);
+  --blue:#2563a8;--blue-dim:rgba(37,99,168,0.08);--blue-mid:rgba(37,99,168,0.18);
+  --amber:#a05c0a;--amber-dim:rgba(160,92,10,0.09);
+  --red:#c0392b;--red-dim:rgba(192,57,43,0.08);--red-mid:rgba(192,57,43,0.20);
+  --purple:#5b3fa8;--purple-dim:rgba(91,63,168,0.08);--purple-mid:rgba(91,63,168,0.20);
+  --text:#1a2a3a;--text2:#4a6a82;--text3:#7a9ab2;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+  --mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(74,130,200,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(74,130,200,0.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(240,246,255,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border2);padding:0 24px;}
+.nav-inner{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.nav-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);}
+.nav-tabs{display:flex;gap:4px;}
+.tab-btn{font-family:var(--sans);font-size:13px;padding:6px 16px;border-radius:20px;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--text2);transition:all .15s;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{background:var(--blue-dim);color:var(--blue);border-color:var(--blue-mid);}
+
+.page{max-width:980px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:1;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.hero{padding:48px 0 40px;border-bottom:1px solid var(--border2);margin-bottom:36px;}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+h1{font-family:var(--serif);font-size:38px;font-weight:400;line-height:1.12;color:var(--text);}
+h1 em{font-style:italic;color:var(--blue);}
+.hero-sub{font-size:14px;color:var(--text2);margin-top:10px;max-width:520px;line-height:1.75;}
+.hbadge{flex-shrink:0;padding:16px 20px;border-radius:12px;min-width:196px;}
+.hbadge .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.hbadge .big{font-family:var(--serif);font-size:28px;line-height:1;}
+.hbadge .sub{font-size:11px;color:var(--text2);margin-top:4px;}
+.hbadge.blue{background:var(--blue-dim);border:1px solid var(--blue-mid);}
+.hbadge.blue .lbl,.hbadge.blue .big{color:var(--blue);}
+.hbadge.teal{background:var(--teal-dim);border:1px solid var(--teal-mid);}
+.hbadge.teal .lbl,.hbadge.teal .big{color:var(--teal);}
+
+/* Generic section */
+.section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:16px;box-shadow:0 1px 4px rgba(74,130,200,0.06);}
+.section:hover{border-color:var(--border2);}
+.smeta{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+.stitle{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--text);line-height:1.3;margin-bottom:16px;}
+.badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.badge-cost{background:var(--red-dim);color:var(--red);border:1px solid var(--red-mid);}
+.badge-rev{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal-mid);}
+
+/* Evidence tab */
+.pgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+.pcard{background:var(--bg2);border:1px solid var(--red-mid);border-radius:10px;padding:16px;}
+.pcard .stat{font-family:var(--serif);font-size:26px;color:var(--red);line-height:1;margin-bottom:6px;}
+.pcard .desc{font-size:12px;color:var(--text2);line-height:1.5;}
+.pcard .desc strong{color:var(--text);font-weight:500;}
+.bmt{width:100%;border-collapse:collapse;font-size:13px;}
+.bmt thead tr{border-bottom:1px solid var(--border2);}
+.bmt th{text-align:left;padding:8px 12px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);}
+.bmt td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle;}
+.bmt tr:last-child td{border-bottom:none;}
+.bmt tr.rn td{background:var(--teal-dim);}
+.bmt tr.rn td:first-child{border-radius:6px 0 0 6px;}
+.bmt tr.rn td:last-child{border-radius:0 6px 6px 0;}
+.bmt tr.rn .vm,.bmt tr.rn .vs{color:var(--teal);font-family:var(--mono);font-weight:500;font-size:14px;}
+.vm,.vs{font-family:var(--mono);}
+.rl{font-weight:500;color:var(--text);}
+.tn{display:inline-block;background:var(--teal);color:#fff;font-size:10px;font-weight:500;padding:1px 7px;border-radius:10px;margin-left:6px;vertical-align:middle;}
+.tg{display:inline-block;background:var(--blue-dim);color:var(--blue);font-size:10px;font-weight:500;padding:1px 7px;border-radius:10px;margin-left:6px;border:1px solid var(--blue-mid);}
+.insight{padding:14px 18px;border-radius:10px;font-size:13px;line-height:1.7;margin-top:16px;}
+.insight.teal{background:var(--teal-dim);border:1px solid var(--teal-mid);}
+.insight.teal strong{color:var(--teal);font-weight:500;}
+.insight.blue{background:var(--blue-dim);border:1px solid var(--blue-mid);}
+.insight.blue strong{color:var(--blue);font-weight:500;}
+.brow{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.brow .brl{font-size:12px;color:var(--text2);min-width:160px;text-align:right;}
+.btrack{flex:1;height:28px;background:var(--bg2);border-radius:6px;overflow:hidden;border:1px solid var(--border);}
+.bfill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:10px;font-family:var(--mono);font-size:12px;font-weight:500;}
+.bfill.bc{background:rgba(192,57,43,0.15);color:var(--red);}
+.bfill.bb{background:rgba(37,99,168,0.18);color:var(--blue);}
+.bfill.bt{background:rgba(14,143,114,0.22);color:var(--teal);}
+.bamt{min-width:52px;font-family:var(--mono);font-size:12px;font-weight:500;}
+.sources{font-size:11px;color:var(--text3);line-height:1.6;}
+.sources strong{color:var(--text2);font-weight:500;}
+.divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+.sgrid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.scard.hl{border-color:var(--teal-mid);background:var(--teal-dim);}
+.scard .lbl{font-size:11px;color:var(--text2);margin-bottom:5px;}
+.scard.hl .lbl{color:var(--teal);}
+.scard .val{font-family:var(--serif);font-size:20px;color:var(--text);}
+.scard.hl .val{color:var(--teal);}
+
+/* Accordion driver cards */
+.dc{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(74,130,200,0.06);overflow:hidden;transition:border-color .2s;}
+.dc:hover{border-color:var(--border2);}
+.dc-header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;cursor:pointer;user-select:none;gap:12px;transition:background .15s;}
+.dc-header:hover{background:var(--bg2);}
+.dc-left{flex:1;min-width:0;}
+.dc-meta{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px;}
+.dc-title{font-size:15px;font-weight:500;color:var(--text);line-height:1.3;}
+.dc-right{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.dc-val{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--teal);}
+.dc-arrow{font-size:13px;color:var(--text3);}
+.dc-body{padding:6px 22px 20px;border-top:1px solid var(--border);}
+.dc-desc{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:14px;margin-top:10px;}
+
+/* Model metric reference box */
+.mm-box{background:var(--teal-dim);border:1px solid var(--teal-mid);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;line-height:1.65;color:var(--text2);}
+.mm-box strong{color:var(--teal);font-weight:500;}
+.mm-box .mval{font-family:var(--mono);font-size:14px;color:var(--teal);font-weight:500;}
+.mm-box.purple{background:var(--purple-dim);border-color:var(--purple-mid);}
+.mm-box.purple strong{color:var(--purple);}
+.mm-box.purple .mval{color:var(--purple);}
+
+/* Number inputs */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:14px 28px;margin-bottom:14px;}
+.ig3{grid-template-columns:1fr 1fr 1fr;}
+.if{display:flex;flex-direction:column;gap:4px;}
+.if label{font-size:12px;color:var(--text2);}
+.iw{display:flex;align-items:center;gap:6px;}
+.iu{font-size:12px;color:var(--text3);white-space:nowrap;}
+.ih{font-size:11px;color:var(--text3);line-height:1.35;}
+.ni{width:100%;padding:8px 10px;border:1.5px solid var(--border2);border-radius:8px;font-family:var(--mono);font-size:13px;color:var(--text);background:var(--card);transition:border-color .15s,box-shadow .15s;-moz-appearance:textfield;}
+.ni::-webkit-outer-spin-button,.ni::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.ni:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,168,0.10);}
+.ni.purple{border-color:rgba(91,63,168,0.28);}
+.ni.purple:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(91,63,168,0.10);}
+.fbar{margin-top:12px;padding:9px 12px;background:var(--bg2);border-radius:8px;border-left:2px solid var(--border2);font-family:var(--mono);font-size:11px;color:var(--text3);line-height:1.6;}
+.dr{display:flex;align-items:baseline;gap:10px;margin-top:12px;}
+.dr .lbl{font-size:12px;color:var(--text2);}
+.dr .val{font-family:var(--serif);font-size:22px;color:var(--text);}
+.ds{font-size:11px;color:var(--text3);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.ds strong{color:var(--text2);font-weight:500;}
+
+/* Hospital profile card */
+.hp-card{background:var(--card);border:1.5px solid var(--blue-mid);border-radius:14px;padding:20px 22px;margin-bottom:14px;box-shadow:0 1px 4px rgba(74,130,200,0.08);}
+.hp-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;}
+
+/* Summary box */
+.sumbox{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:24px 28px;margin-top:20px;}
+.sumtitle{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:16px;}
+.sum-group{margin-bottom:14px;}
+.sum-glabel{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+.sum-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px;}
+.sum-row:last-child{border-bottom:none;}
+.sum-row .sn{color:var(--text2);}
+.sum-row .sv{font-family:var(--mono);color:var(--text);font-weight:500;white-space:nowrap;}
+.cbtn-row{display:flex;gap:6px;flex-wrap:wrap;}
+.cbtn{font-family:var(--mono);font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .15s;}
+.cbtn:hover{border-color:var(--blue);color:var(--blue);}
+.cbtn.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+.cgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.ccard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.ccard.p{border-color:var(--teal-mid);}
+.ccard .lbl{font-size:11px;color:var(--text2);margin-bottom:5px;}
+.ccard .val{font-family:var(--serif);font-size:18px;color:var(--text);}
+.ccard.p .val{color:var(--teal);font-size:22px;}
+.cnote{font-size:12px;color:var(--text3);margin-top:12px;line-height:1.6;padding-top:12px;border-top:1px solid var(--border);}
+.cnote span{color:var(--teal);}
+
+/* Save button */
+.save-btn{font-family:var(--sans);font-size:13px;font-weight:500;padding:10px 28px;border-radius:24px;background:var(--teal);color:#fff;border:none;cursor:pointer;transition:opacity .15s;}
+.save-btn:hover{opacity:.88;}
+.toast{position:fixed;bottom:28px;right:28px;z-index:999;background:var(--teal);color:#fff;font-size:13px;font-weight:500;padding:10px 20px;border-radius:8px;box-shadow:0 4px 16px rgba(14,143,114,0.3);opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast.show{opacity:1;}
+
+/* Hospital records database */
+.rec-table{width:100%;border-collapse:collapse;font-size:13px;}
+.rec-table thead tr{border-bottom:2px solid var(--border2);}
+.rec-table th{text-align:left;padding:9px 12px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);}
+.rec-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle;}
+.rec-table tr:last-child td{border-bottom:none;}
+.rec-table tr:hover td{background:var(--bg2);}
+.rec-name{font-weight:500;color:var(--text)!important;}
+.rec-total{font-family:var(--mono);font-size:15px;color:var(--teal)!important;font-weight:500;}
+.rec-action{font-family:var(--sans);font-size:11px;font-weight:500;padding:4px 12px;border-radius:14px;cursor:pointer;border:1px solid;transition:all .15s;}
+.rec-load{background:var(--blue-dim);color:var(--blue);border-color:var(--blue-mid);}
+.rec-load:hover{background:var(--blue);color:#fff;}
+.rec-del{background:var(--red-dim);color:var(--red);border-color:var(--red-mid);margin-left:4px;}
+.rec-del:hover{background:var(--red);color:#fff;}
+.db-empty{text-align:center;padding:60px 24px;color:var(--text3);font-size:13px;background:var(--card);border:1px solid var(--border);border-radius:14px;}
+.db-empty .big{font-family:var(--serif);font-size:26px;margin-bottom:10px;color:var(--text2);}
+.db-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.export-btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:7px 16px;border-radius:20px;background:transparent;color:var(--text2);border:1px solid var(--border2);cursor:pointer;transition:all .15s;}
+.export-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* Impact dashboard */
+.wf-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+.wf-label{font-size:12px;color:var(--text2);min-width:220px;text-align:right;white-space:nowrap;}
+.wf-track{flex:1;height:26px;background:var(--bg2);border-radius:4px;overflow:hidden;border:1px solid var(--border);}
+.wf-fill{height:100%;border-radius:4px;}
+.wf-amt{font-family:var(--mono);font-size:12px;font-weight:500;min-width:90px;white-space:nowrap;}
+
+.cta-btn{font-family:var(--sans);font-size:13px;font-weight:500;padding:10px 28px;border-radius:24px;background:var(--blue);color:#fff;border:none;cursor:pointer;transition:opacity .15s;}
+.cta-btn:hover{opacity:.88;}
+footer{text-align:center;padding:32px 0 0;font-size:11px;color:var(--text3);border-top:1px solid var(--border);margin-top:48px;}
+
+/* Responsive grid classes for impact/comparison sections */
+.imp-top-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.ba-grid{display:grid;grid-template-columns:1fr 28px 1fr;gap:0;align-items:stretch;}
+.ba-arrow{display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:18px;}
+.sens-grid{display:grid;grid-template-columns:160px 1fr;gap:24px;align-items:center;margin-bottom:20px;}
+
+@media(max-width:768px){
+  .nav-inner{flex-wrap:wrap;height:auto;padding:6px 0 2px;}
+  .nav-tabs{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none;}
+  .nav-tabs::-webkit-scrollbar{display:none;}
+  .tab-btn{font-size:12px;padding:5px 12px;white-space:nowrap;flex-shrink:0;}
+  .sens-grid{grid-template-columns:140px 1fr;gap:16px;}
+}
+@media(max-width:640px){
+  /* Typography */
+  h1{font-size:24px;}
+  .hero-sub{font-size:13px;}
+  /* Layout */
+  .page{padding:0 12px 60px;}
+  .hero{padding:28px 0 24px;}
+  .section{padding:16px 14px;}
+  .sumbox{padding:16px 14px;}
+  .hp-card{padding:14px 14px;}
+  .dc-header{padding:12px 16px;}
+  .dc-body{padding:6px 16px 16px;}
+  /* Hero badge */
+  .hero-top{flex-direction:column;}
+  .hbadge{min-width:0;width:100%;}
+  .hbadge .big{font-size:22px;}
+  /* Grids — existing */
+  .ig,.ig3,.sgrid2,.sgrid3,.cgrid,.pgrid3,.db-stats,.imp-top-grid{grid-template-columns:1fr!important;}
+  /* Grids — new responsive classes */
+  .ba-grid{grid-template-columns:1fr!important;}
+  .ba-arrow{display:none;}
+  .sens-grid{grid-template-columns:1fr!important;}
+  /* Bar chart comparison labels */
+  .brl{min-width:90px;font-size:11px;}
+  /* Waterfall chart */
+  .wf-row{flex-wrap:wrap;}
+  .wf-label{min-width:0;width:100%;text-align:left;margin-bottom:2px;}
+  .wf-amt{min-width:50px;font-size:11px;}
+  /* Tables — horizontal scroll */
+  .bmt,.rec-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  /* Toast */
+  .toast{right:12px;bottom:16px;font-size:12px;padding:8px 14px;}
+  /* Save row */
+  .save-btn{width:100%;}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo"><div class="nav-dot"></div>Navo Health</div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('evidence',this)">Clinical Evidence</button>
+      <button class="tab-btn" onclick="switchTab('value',this)">Value Model</button>
+      <button class="tab-btn" onclick="switchTab('impact',this)">Impact Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('hospitals',this)" id="tab-btn-hospitals">Hospital Records</button>
+    </div>
+  </div>
+</nav>
+<div class="page">
+
+<!-- ═══════════ TAB 1 — CLINICAL EVIDENCE ═══════════ -->
+<div id="tab-evidence" class="tab-panel active">
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <h1>Where the current norm<br><em>falls short</em></h1>
+        <p class="hero-sub">Three bodies of evidence — stakeholder research, published benchmarks, and Navo's own test-set results — show the clinical gap Navo is positioned to close.</p>
+      </div>
+      <div class="hbadge blue"><div class="lbl">Navo AUC</div><div class="big">0.821</div><div class="sub">Sens @ 90% spec: 0.471 avg (+74% vs clinician)</div></div>
+    </div>
+  </div>
+
+
+  <div class="section">
+    <div class="smeta">Evidence 1 · Stakeholder research</div>
+    <div class="stitle">Current products are not helping obstetric teams make better choices</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.75;">Across interviews with nurses, midwives, registrars, and O&G consultants, four systemic failure modes emerged: difficulty differentiating alerts objectively, hours of waveform overload, missed subtle anomalies, and interpretation disagreements at escalation handoffs.</p>
+    <div class="pgrid3">
+      <div class="pcard"><div class="stat">5–6 / 10</div><div class="desc"><strong>Unnecessary escalations</strong> per labor episode — over-alerting on non-critical traces</div></div>
+      <div class="pcard"><div class="stat">4–5 / 10</div><div class="desc"><strong>Subtle anomalies missed</strong> — genuine fetal distress lost in hours of waveform noise</div></div>
+      <div class="pcard"><div class="stat">4–6 / 10</div><div class="desc"><strong>Correct escalations carry wrong interpretations</strong> — frontliner and consultant disagreement delays action</div></div>
+    </div>
+    <div class="sources"><strong>Source:</strong> Navo Health primary stakeholder interviews, labour wards across multiple countries, 2025–2026.</div>
+  </div>
+
+  <div class="section">
+    <div class="smeta">Evidence 2 · Published literature</div>
+    <div class="stitle">Even the best published AI models barely outperform a clinician</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.75;">A Google study (2025) benchmarked multiple CTG model configurations for fetal pH prediction. Their strongest model (FHR + UC + metadata) achieved AUC 0.69 with sensitivity 0.44 at 90% specificity. Clinician performance at the same operating point: sensitivity 0.27 — a gap of only 17 percentage points.</p>
+
+    <div style="margin:0 0 20px;">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;">Sensitivity @ 90% specificity — pH prediction</div>
+      <div class="brow"><div class="brl">Clinician baseline</div><div class="btrack"><div class="bfill bc" style="width:27%">0.27</div></div><div class="bamt" style="color:var(--red)">0.27</div></div>
+      <div class="brow"><div class="brl">Google FHR+UC+metadata <span class="tg">best 2025</span></div><div class="btrack"><div class="bfill bb" style="width:44%">0.44</div></div><div class="bamt" style="color:var(--blue)">0.44</div></div>
+      <div class="brow"><div class="brl">Navo (avg, test set) <span class="tn">ours</span></div><div class="btrack"><div class="bfill bt" style="width:47.1%">0.471</div></div><div class="bamt" style="color:var(--teal)">0.471</div></div>
+    </div>
+
+    <div class="divider"></div>
+    <table class="bmt">
+      <thead><tr><th>Model</th><th>AUROC</th><th>Sens @ 90% Spec</th><th>vs Clinician</th></tr></thead>
+      <tbody>
+        <tr><td class="rl">Clinician (human baseline)</td><td class="vm">—</td><td class="vs">0.27</td><td style="color:var(--text3);">baseline</td></tr>
+        <tr><td>Feature-based (Google)</td><td class="vm">0.61</td><td class="vs">0.24</td><td style="color:var(--red);font-family:var(--mono);">–0.03</td></tr>
+        <tr><td>FHR + UC (Google)</td><td class="vm">0.62</td><td class="vs">0.27</td><td style="color:var(--text3);font-family:var(--mono);">+0.00</td></tr>
+        <tr><td>FHR + UC + metadata <span class="tg">Google best</span></td><td class="vm">0.69</td><td class="vs">0.44</td><td style="color:var(--blue);font-family:var(--mono);">+0.17</td></tr>
+        <tr class="rn"><td class="rl">Navo five-branch model (avg) <span class="tn">ours</span></td><td class="vm">0.821</td><td class="vs">0.471</td><td style="font-weight:500;font-family:var(--mono);color:var(--teal);">+0.201</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--text3);margin-top:8px;">Avg of acidotic class sens 0.552 and normal class sens 0.389 from one-vs-rest ROC curves on held-out test set at 90% specificity operating point.</div>
+    <div class="sources" style="margin-top:10px;"><strong>Source:</strong> Google AI CTG manuscript (2025). Clinician benchmark: 0.27 ± 0.18 sens @ 90% spec. Navo: internal test set, five-branch neural network.</div>
+  </div>
+
+  <div class="section">
+    <div class="smeta">Evidence 3 · Navo model results — held-out test set</div>
+    <div class="stitle">Current model performance at default threshold</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.75;">Evaluated on a held-out test set of 83 patients (29 acidotic, 54 normal). At the default 0.5 decision threshold, the model achieves the following performance. These metrics directly inform the value drivers in the model tab.</p>
+
+    <div class="sgrid3" style="margin-bottom:16px;">
+      <div class="scard"><div class="lbl">AUC (ROC curve)</div><div class="val">0.821</div><div style="font-size:11px;color:var(--text3);margin-top:3px;">Threshold-agnostic</div></div>
+      <div class="scard"><div class="lbl">Sensitivity — acidotic recall</div><div class="val">0.79</div><div style="font-size:11px;color:var(--text3);margin-top:3px;">23 / 29 acidotic cases caught</div></div>
+      <div class="scard"><div class="lbl">Specificity — normal recall</div><div class="val">0.69</div><div style="font-size:11px;color:var(--text3);margin-top:3px;">37 / 54 normal cases correctly cleared</div></div>
+    </div>
+    <div class="sgrid3">
+      <div class="scard"><div class="lbl">Normal precision</div><div class="val">0.86</div><div style="font-size:11px;color:var(--text3);margin-top:3px;">When Navo says normal, 86% correct</div></div>
+      <div class="scard"><div class="lbl">Overall accuracy</div><div class="val">0.72</div><div style="font-size:11px;color:var(--text3);margin-top:3px;">60 / 83 test cases correct</div></div>
+      <div class="scard hl"><div class="lbl">Test set (n=83)</div><div class="val" style="font-size:18px;">29 acid · 54 normal</div><div style="font-size:11px;color:var(--teal);opacity:.8;margin-top:3px;">Held-out, not seen during training</div></div>
+    </div>
+    <div class="insight teal" style="margin-top:16px;"><strong>Two operating points:</strong> The ROC curve analysis (90% specificity) gives sensitivity 0.471 avg — this is how Navo compares to the Google benchmark and clinicians. The classification report (default 0.5 threshold) gives sensitivity 0.79 at 69% specificity — this reflects the model's actual current operating point and is used in the True Negative Clearance value driver. Both are valid; they describe performance at different threshold settings.</div>
+    <div class="sources" style="margin-top:12px;"><strong>Source:</strong> Navo internal five-branch neural network evaluation. Test loss 0.5656, test accuracy 0.7229. Confusion matrix: TP=23, FN=6, FP=17, TN=37.</div>
+  </div>
+  <div style="text-align:center;margin-top:28px;"><button class="cta-btn" onclick="switchTab('value',document.querySelectorAll('.tab-btn')[1])">See the Value Model →</button></div>
+</div>
+
+
+<!-- ═══════════ TAB 2 — VALUE MODEL ═══════════ -->
+<div id="tab-value" class="tab-panel">
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <h1>Hospital <em>Value</em><br>Derivation Model</h1>
+        <p class="hero-sub">Six drivers grounded in Navo's actual model performance and stakeholder research. Enter your own assumptions — reference ranges are shown for each field. All figures in USD.</p>
+      </div>
+      <div class="hbadge teal"><div class="lbl">Total value / hospital / yr</div><div class="big" id="hero-total">—</div><div class="sub">USD at current inputs</div></div>
+    </div>
+  </div>
+
+  <!-- Hospital profile (global inputs) -->
+  <div class="hp-card">
+    <div class="hp-label">Hospital profile — shared inputs</div>
+    <div class="if" style="margin-bottom:14px;">
+      <label>Hospital name</label>
+      <div class="iw"><input class="ni" type="text" id="g-hospital-name" placeholder="e.g. KKH, SGH, NUH…" style="font-family:var(--sans);font-size:13px;"></div>
+      <div class="ih">Used to label saved records in the Hospital Records tab</div>
+    </div>
+    <div class="ig">
+      <div class="if">
+        <label>Annual deliveries</label>
+        <div class="iw"><input class="ni" type="number" id="g-deliveries" value="4000" oninput="recalc()"><span class="iu">deliveries / yr</span></div>
+        <div class="ih">Typical range: 2,000 – 6,000 (restructured SG hospital)</div>
+      </div>
+      <div class="if">
+        <label>Avg active labor duration</label>
+        <div class="iw"><input class="ni" type="number" id="g-labordur" value="10" oninput="recalc()"><span class="iu">hrs</span></div>
+        <div class="ih">Typical range: 8 – 14 hrs (active phase)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D1a -->
+  <div class="dc">
+    <div class="dc-header" onclick="toggleD('d1a')">
+      <div class="dc-left"><div class="dc-meta">Driver 1a · Operational</div><div class="dc-title">Nursing surveillance burden reduction</div></div>
+      <div class="dc-right"><div class="dc-val" id="d1a-hval">$0</div><div class="dc-arrow" id="d1a-arrow">▸</div></div>
+    </div>
+    <div class="dc-body" id="d1a-body" style="display:none;">
+      <p class="dc-desc">Nurses spend cumulative hours per labor episode watching the CTG stream and interpreting waveform patterns. Navo performs real-time first-level AI surveillance — nurses review flagged events only, not the full stream. This frees significant nursing capacity per patient.</p>
+      <div class="ig">
+        <div class="if"><label>Nurse CTG monitoring time per hr</label><div class="iw"><input class="ni" type="number" id="d1a-monitormin" value="12" oninput="recalc()"><span class="iu">min / hr</span></div><div class="ih">Typical range: 8 – 18 min/hr spent watching stream</div></div>
+        <div class="if"><label>Navo surveillance burden reduction</label><div class="iw"><input class="ni" type="number" id="d1a-survreduction" value="50" oninput="recalc()"><span class="iu">%</span></div><div class="ih">Conservative range: 40 – 65% (nurse reviews flags only)</div></div>
+        <div class="if"><label>Nurse / midwife blended cost</label><div class="iw"><input class="ni" type="number" id="d1a-nursecost" value="55" oninput="recalc()"><span class="iu">USD / hr</span></div><div class="ih">Typical range: $40 – $80/hr senior nurse rate</div></div>
+      </div>
+      <div class="fbar" id="d1a-formula"></div>
+      <div class="dr"><span class="lbl">Annual value</span><span class="val" id="d1a-value"></span></div>
+      <div class="ds"><strong>Validate:</strong> Labour ward nursing time-use studies · SingHealth midwifery staffing data · MOH workload reports</div>
+    </div>
+  </div>
+
+  <!-- D1b -->
+  <div class="dc">
+    <div class="dc-header" onclick="toggleD('d1b')">
+      <div class="dc-left"><div class="dc-meta">Driver 1b · Operational</div><div class="dc-title">Alert fatigue & unnecessary escalation cost</div></div>
+      <div class="dc-right"><div class="dc-val" id="d1b-hval">$0</div><div class="dc-arrow" id="d1b-arrow">▸</div></div>
+    </div>
+    <div class="dc-body" id="d1b-body" style="display:none;">
+      <p class="dc-desc">Continuous CTG generates frequent alerts throughout labor. Stakeholder research shows 5–6 in 10 escalations are unnecessary — each pulls a registrar or consultant away from other patients for a review cycle that Navo's AI triage would have pre-empted.</p>
+      <div class="ig">
+        <div class="if"><label>Escalations per labor episode</label><div class="iw"><input class="ni" type="number" id="d1b-escalations" value="4" oninput="recalc()"><span class="iu">per episode</span></div><div class="ih">Typical range: 2 – 7 across a 10-hr labor</div></div>
+        <div class="if"><label>Unnecessary escalation rate</label><div class="iw"><input class="ni" type="number" id="d1b-falserate" value="55" oninput="recalc()"><span class="iu">%</span></div><div class="ih">From stakeholder research: 5–6 / 10 = 50–60%</div></div>
+        <div class="if"><label>Navo reduction in false escalations</label><div class="iw"><input class="ni" type="number" id="d1b-reduction" value="40" oninput="recalc()"><span class="iu">%</span></div><div class="ih">Conservative pre-validation estimate: 30 – 50%</div></div>
+        <div class="if"><label>Physician time cost per escalation</label><div class="iw"><input class="ni" type="number" id="d1b-esccost" value="120" oninput="recalc()"><span class="iu">USD</span></div><div class="ih">~30 min registrar + consultant loop at $240/hr blended</div></div>
+      </div>
+      <div class="fbar" id="d1b-formula"></div>
+      <div class="dr"><span class="lbl">Annual value</span><span class="val" id="d1b-value"></span></div>
+      <div class="ds"><strong>Validate:</strong> Escalation logs from labour wards · Registrar time-use studies · O&G on-call workload data</div>
+    </div>
+  </div>
+
+  <!-- D1c -->
+  <div class="dc">
+    <div class="dc-header" onclick="toggleD('d1c')">
+      <div class="dc-left"><div class="dc-meta">Driver 1c · Operational · True negative clearance</div><div class="dc-title">Value of correctly clearing normal traces</div></div>
+      <div class="dc-right"><div class="dc-val" id="d1c-hval">$0</div><div class="dc-arrow" id="d1c-arrow">▸</div></div>
+    </div>
+    <div class="dc-body" id="d1c-body" style="display:none;">
+      <p class="dc-desc">When a clinician is uncertain whether a trace is genuinely normal, the default response is extended monitoring, a second opinion, or additional assessments — not because the fetus is distressed, but because interpretive confidence is low. Navo provides an objective low-risk score that can avoid this unnecessary workup.</p>
+      <div class="mm-box">
+        <strong>Navo model — actual TN rate (from held-out test set):</strong><br>
+        Normal recall (specificity) = <span class="mval">0.69</span> &nbsp;·&nbsp; 37 out of 54 normal cases correctly cleared<br>
+        <span style="font-size:11px;color:var(--text3);">This is used as a fixed model parameter below. As the model improves, this figure will increase.</span>
+      </div>
+      <div class="ig">
+        <div class="if"><label>Normal delivery rate</label><div class="iw"><input class="ni" type="number" id="d1c-normalrate" value="95" oninput="recalc()"><span class="iu">%</span></div><div class="ih">Typical range: 90 – 97% (most labors are physiologically normal)</div></div>
+        <div class="if"><label>Rate of ambiguous-but-normal traces</label><div class="iw"><input class="ni" type="number" id="d1c-ambigrate" value="25" oninput="recalc()"><span class="iu">%</span></div><div class="ih">Typical range: 15 – 35% (uncertain despite normal outcome)</div></div>
+        <div class="if"><label>Cost per unnecessary workup avoided</label><div class="iw"><input class="ni" type="number" id="d1c-workupcost" value="350" oninput="recalc()"><span class="iu">USD</span></div><div class="ih">Extended monitoring + repeat assessment + 2nd opinion: $200 – $600</div></div>
+      </div>
+      <div class="fbar" id="d1c-formula"></div>
+      <div class="dr"><span class="lbl">Annual value</span><span class="val" id="d1c-value"></span></div>
+      <div class="ds"><strong>Validate:</strong> Extended monitoring logs · Fetal blood sampling rates · Second-opinion consultation data · Bed occupancy records<br><strong>Note:</strong> TN rate of 0.69 is fixed from Navo's held-out test set (37/54). All other inputs are adjustable assumptions.</div>
+    </div>
+  </div>
+
+  <!-- D1d -->
+  <div class="dc">
+    <div class="dc-header" onclick="toggleD('d1d')">
+      <div class="dc-left"><div class="dc-meta">Driver 1d · Operational · Communication quality</div><div class="dc-title">Frontliner–consultant interpretation disagreement cost</div></div>
+      <div class="dc-right"><div class="dc-val" id="d1d-hval">$0</div><div class="dc-arrow" id="d1d-arrow">▸</div></div>
+    </div>
+    <div class="dc-body" id="d1d-body" style="display:none;">
+      <p class="dc-desc">Stakeholder research shows 4–6 in 10 correct escalations still carry inconsistent interpretations between nurse and consultant. The team re-reviews the same trace from scratch, pulling multiple staff to the bedside, while the patient remains in an unresolved clinical state. Navo provides a single shared risk score visible to the entire team — collapsing disagreement cycles into confirmation conversations.</p>
+      <div class="mm-box purple">
+        <strong>From stakeholder research:</strong> 4–6 correct escalations in 10 involve misaligned interpretation between frontliner and consultant, causing a 30–60 min decision delay per episode.
+      </div>
+        <div class="ig">
+        <div class="if"><label>Interpretation disagreement rate</label><div class="iw"><input class="ni purple" type="number" id="d1d-disagreerate" value="45" oninput="recalc()"><span class="iu">%</span></div><div class="ih">From stakeholder data: 4–6 / 10 = 40 – 60%</div></div>
+        <div class="if"><label>Navo disagreement reduction</label><div class="iw"><input class="ni purple" type="number" id="d1d-reduction" value="55" oninput="recalc()"><span class="iu">%</span></div><div class="ih">Shared AI reference score aligns team: est. 45 – 65%</div></div>
+        <div class="if"><label>Staff re-review cost per disagreement</label><div class="iw"><input class="ni purple" type="number" id="d1d-cyclecost" value="40" oninput="recalc()"><span class="iu">USD</span></div><div class="ih">~20 min registrar + consultant re-review at $120/hr: $30 – $80</div></div>
+        <div class="if"><label>Decision delay per disagreement</label><div class="iw"><input class="ni purple" type="number" id="d1d-delay" value="20" oninput="recalc()"><span class="iu">min</span></div><div class="ih">Avg delay while team re-aligns: 15 – 45 min</div></div>
+        <div class="if"><label>Clinical cost per minute of delay</label><div class="iw"><input class="ni purple" type="number" id="d1d-costpermin" value="1" oninput="recalc()"><span class="iu">USD / min</span></div><div class="ih">Risk cost of patient in unresolved state: $0.50 – $3.00/min</div></div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px;grid-column:1/-1;">Escalation count is shared from Driver 1b automatically.</div>
+      </div>
+      <div class="fbar" id="d1d-formula"></div>
+      <div class="dr"><span class="lbl">Annual value</span><span class="val" id="d1d-value"></span></div>
+      <div class="ds"><strong>Validate:</strong> Escalation disagreement audit logs · Consultant call-back frequency · Time-to-decision data from incident reviews</div>
+    </div>
+  </div>
+
+  <!-- D3 -->
+  <div class="dc">
+    <div class="dc-header" onclick="toggleD('d3')">
+      <div class="dc-left"><div class="dc-meta">Driver 2 · Clinical safety</div><div class="dc-title">Litigation & adverse outcome cost avoidance</div></div>
+      <div class="dc-right"><div class="dc-val" id="d3-hval">$0</div><div class="dc-arrow" id="d3-arrow">▸</div></div>
+    </div>
+    <div class="dc-body" id="d3-body" style="display:none;">
+      <p class="dc-desc">Adverse outcomes from missed fetal distress occur because subtle deterioration patterns go undetected over hours of monitoring. Navo's continuous risk scoring — sensitivity 0.471 at 90% specificity, 74% above the clinician baseline — catches deteriorating trends earlier, potentially reducing adverse events that lead to litigation.</p>
+      <div class="ig">
+        <div class="if"><label>Adverse outcomes per hospital / yr</label><div class="iw"><input class="ni" type="number" id="d3-adverserate" value="0.5" step="0.1" oninput="recalc()"><span class="iu">cases / yr</span></div><div class="ih">Conservative estimate: 1 case every 2 years; range 0.2 – 2.0</div></div>
+        <div class="if"><label>Avg litigation cost per case</label><div class="iw"><input class="ni" type="number" id="d3-litigcost" value="800000" oninput="recalc()"><span class="iu">USD</span></div><div class="ih">Settlement + legal + insurance uplift: $300,000 – $2,000,000</div></div>
+        <div class="if"><label>Attributable to missed CTG</label><div class="iw"><input class="ni" type="number" id="d3-ctgattr" value="50" oninput="recalc()"><span class="iu">%</span></div><div class="ih">CTG misread implicated in ~50% of OB litigation: range 30 – 70%</div></div>
+        <div class="if"><label>Navo reduction in missed cases</label><div class="iw"><input class="ni" type="number" id="d3-navoreduction" value="35" oninput="recalc()"><span class="iu">%</span></div><div class="ih">Conservative pre-validation claim: range 20 – 50%</div></div>
+      </div>
+      <div class="fbar" id="d3-formula"></div>
+      <div class="dr"><span class="lbl">Annual value</span><span class="val" id="d3-value"></span></div>
+      <div class="ds"><strong>Validate:</strong> MOH adverse event data · Singapore Medical Council rulings · SingHealth / NUHS risk management</div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="sumbox">
+    <div class="sumtitle">Total annual value per hospital — USD</div>
+    <div class="sum-group">
+      <div class="sum-glabel">Operational efficiency (1a + 1b + 1c + 1d)</div>
+      <div class="sum-row"><span class="sn">1a · Nursing surveillance reduction</span><span class="sv" id="sum-v1a">$0</span></div>
+      <div class="sum-row"><span class="sn">1b · Alert fatigue & false escalations</span><span class="sv" id="sum-v1b">$0</span></div>
+      <div class="sum-row"><span class="sn">1c · True negative clearance</span><span class="sv" id="sum-v1c">$0</span></div>
+      <div class="sum-row"><span class="sn">1d · Comms inconsistency & decision delay</span><span class="sv" id="sum-v1d">$0</span></div>
+    </div>
+    <div class="sum-group">
+      <div class="sum-glabel">Clinical safety</div>
+      <div class="sum-row"><span class="sn">2 · Litigation & adverse outcome avoidance</span><span class="sv" id="sum-v3">$0</span></div>
+    </div>
+    <div class="divider"></div>
+    <div style="margin-bottom:20px;">
+      <div class="scard hl" style="text-align:center;padding:20px 24px;">
+        <div class="lbl" style="font-size:12px;margin-bottom:6px;">Total value delivered / hospital / yr</div>
+        <div class="val" id="total-all" style="font-size:32px;"></div>
+        <div id="total-savings" style="display:none;"></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+      <div style="font-size:13px;color:var(--text2);font-weight:500;">Suggested SaaS fee — value capture benchmark</div>
+      <div class="cbtn-row">
+        <button class="cbtn" onclick="setCapture(10,this)">10%</button>
+        <button class="cbtn active" onclick="setCapture(20,this)">20%</button>
+        <button class="cbtn" onclick="setCapture(30,this)">30%</button>
+        <button class="cbtn" onclick="setCapture(40,this)">40%</button>
+        <button class="cbtn" onclick="setCapture(50,this)">50%</button>
+      </div>
+    </div>
+    <div class="cgrid">
+      <div class="ccard p"><div class="lbl">Annual SaaS fee / site</div><div class="val" id="saas-fee"></div></div>
+      <div class="ccard"><div class="lbl">Monthly equivalent</div><div class="val" id="saas-monthly"></div></div>
+      <div class="ccard"><div class="lbl">10-hospital ARR</div><div class="val" id="saas-arr"></div></div>
+    </div>
+    <div class="cnote" id="capture-note"></div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+      <div style="font-size:12px;color:var(--text2);max-width:440px;line-height:1.6;">Save this configuration as a hospital record. You can load it back at any time or export all records as a CSV from the <strong>Hospital Records</strong> tab.</div>
+      <button class="save-btn" onclick="saveHospital()">Save Hospital Record</button>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:28px;"><button class="cta-btn" onclick="switchTab('impact',document.querySelectorAll('.tab-btn')[2])">See the Impact Dashboard →</button></div>
+</div>
+
+
+<!-- ═══════════ TAB 3 — IMPACT DASHBOARD ═══════════ -->
+<div id="tab-impact" class="tab-panel">
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <h1>From <em>clinical metric</em><br>to dollar value</h1>
+        <p class="hero-sub">All figures reflect your current Value Model inputs and update live. Values in USD.</p>
+      </div>
+      <div class="hbadge blue"><div class="lbl">Sensitivity gain vs clinician</div><div class="big">+74%</div><div class="sub">0.27 (clinician) → 0.471 (Navo) @ 90% spec</div></div>
+    </div>
+  </div>
+
+  <div class="imp-top-grid">
+    <div class="scard"><div class="lbl">Operational efficiency</div><div class="val" id="imp-ops" style="font-size:19px;"></div><div style="font-size:11px;color:var(--text3);margin-top:3px;">Drivers 1a + 1b + 1c + 1d</div></div>
+    <div class="scard"><div class="lbl">Litigation avoidance</div><div class="val" id="imp-v3" style="font-size:19px;"></div><div style="font-size:11px;color:var(--text3);margin-top:3px;" id="imp-cases">Driver 2</div></div>
+    <div class="scard hl"><div class="lbl">Total / hospital / yr</div><div class="val" id="imp-total"></div><div style="font-size:11px;color:var(--teal);opacity:.8;margin-top:3px;" id="imp-sub">USD — cost savings only</div></div>
+  </div>
+
+  <div class="section">
+    <div class="smeta">Before vs after</div>
+    <div class="stitle">What changes when Navo goes live on the labor ward</div>
+    <div class="ba-grid">
+      <div style="background:var(--bg2);border:1px solid var(--red-mid);border-radius:10px;padding:16px;">
+        <div style="font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:10px;">Without Navo</div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Nurse surveillance / labor episode</span><span style="font-family:var(--mono);color:var(--red);" id="ba-surv-b">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Unnecessary escalations / episode</span><span style="font-family:var(--mono);color:var(--red);" id="ba-esc-b">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Ambiguous-normal cases needing workup</span><span style="font-family:var(--mono);color:var(--red);">Require 2nd opinion</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Disagreement cycles / episode</span><span style="font-family:var(--mono);color:var(--red);" id="ba-dis-b">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Decision delay per disagreement</span><span style="font-family:var(--mono);color:var(--red);" id="ba-delay-b">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Acidotic sensitivity @ 90% spec</span><span style="font-family:var(--mono);color:var(--red);">0.27 (clinician)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px;gap:8px;"><span style="color:var(--text2);">Avoidable cost burden / yr</span><span style="font-family:var(--mono);color:var(--red);" id="ba-cost-b">—</span></div>
+      </div>
+      <div class="ba-arrow">→</div>
+      <div style="background:var(--bg2);border:1px solid var(--teal-mid);border-radius:10px;padding:16px;">
+        <div style="font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:10px;">With Navo</div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Nurse surveillance / labor episode</span><span style="font-family:var(--mono);color:var(--teal);" id="ba-surv-a">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Unnecessary escalations / episode</span><span style="font-family:var(--mono);color:var(--teal);" id="ba-esc-a">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Ambiguous-normal cases needing workup</span><span style="font-family:var(--mono);color:var(--teal);" id="ba-tn-a">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Disagreement cycles / episode</span><span style="font-family:var(--mono);color:var(--teal);" id="ba-dis-a">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Decision delay per disagreement</span><span style="font-family:var(--mono);color:var(--teal);">Shared AI score pre-aligns team</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;"><span style="color:var(--text2);">Acidotic sensitivity @ 90% spec</span><span style="font-family:var(--mono);color:var(--teal);">0.471 avg (test set)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px;gap:8px;"><span style="color:var(--text2);">Value delivered / yr</span><span style="font-family:var(--mono);color:var(--teal);font-weight:500;" id="ba-val-a">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="smeta">Pathway breakdown</div>
+    <div class="stitle">How each improvement creates dollar value</div>
+    <div class="sgrid2">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:10px;padding:16px;">
+        <div style="font-size:12px;font-weight:500;color:var(--blue);margin-bottom:10px;">Operational pathway (1a + 1b + 1c + 1d)</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border);gap:8px;line-height:1.5;"><span id="op1l">—</span><span style="font-family:var(--mono);color:var(--blue);white-space:nowrap;" id="op1v">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border);gap:8px;line-height:1.5;"><span id="op2l">—</span><span style="font-family:var(--mono);color:var(--blue);white-space:nowrap;" id="op2v">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border);gap:8px;line-height:1.5;"><span id="op3l">—</span><span style="font-family:var(--mono);color:var(--purple);white-space:nowrap;" id="op3v">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:4px 0;gap:8px;line-height:1.5;"><span id="op4l">—</span><span style="font-family:var(--mono);color:var(--purple);white-space:nowrap;" id="op4v">—</span></div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--teal);border-radius:10px;padding:16px;">
+        <div style="font-size:12px;font-weight:500;color:var(--teal);margin-bottom:10px;">Clinical safety pathway (2)</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:4px 0;gap:8px;line-height:1.5;"><span id="cl1l">—</span><span style="font-family:var(--mono);color:var(--teal);white-space:nowrap;" id="cl1v">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="smeta">Value bridge</div>
+    <div class="stitle">All drivers mapped to USD</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);"><div style="width:10px;height:10px;border-radius:2px;background:rgba(37,99,168,0.4);"></div>Operational (1a, 1b)</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);"><div style="width:10px;height:10px;border-radius:2px;background:rgba(91,63,168,0.4);"></div>TN / comms (1c, 1d)</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);"><div style="width:10px;height:10px;border-radius:2px;background:rgba(14,143,114,0.4);"></div>Clinical safety (2)</div>
+    </div>
+    <div id="waterfall-rows" style="display:flex;flex-direction:column;gap:6px;"></div>
+  </div>
+
+  <div class="section">
+    <div class="smeta">Model performance in practice</div>
+    <div class="stitle">What sensitivity 0.471 @ 90% specificity means for a real hospital</div>
+    <div class="sens-grid">
+      <div style="display:flex;align-items:flex-end;gap:10px;padding:0 4px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:500;color:var(--red);">0.27</div>
+          <div style="width:32px;height:54px;background:var(--red-dim);border:1px solid var(--red-mid);border-radius:3px 3px 0 0;"></div>
+          <div style="font-size:10px;color:var(--text3);text-align:center;line-height:1.3;">Clinician<br>@ 90% spec</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:500;color:var(--blue);">0.44</div>
+          <div style="width:32px;height:88px;background:var(--blue-dim);border:1px solid var(--blue-mid);border-radius:3px 3px 0 0;"></div>
+          <div style="font-size:10px;color:var(--text3);text-align:center;line-height:1.3;">Google<br>@ 90% spec</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:500;color:var(--teal);">0.471</div>
+          <div style="width:32px;height:94px;background:var(--teal-mid);border:1px solid var(--teal);border-radius:3px 3px 0 0;"></div>
+          <div style="font-size:10px;color:var(--teal);text-align:center;font-weight:500;line-height:1.3;">Navo avg<br>@ 90% spec</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;" id="sens-header">—</div>
+        <div style="font-size:12px;color:var(--text2);line-height:2.1;">
+          Clinician catches (0.27 @ 90% spec): <span style="font-family:var(--mono);color:var(--red);" id="sens-clin">—</span><br>
+          Google best catches (0.44 @ 90% spec): <span style="font-family:var(--mono);color:var(--blue);" id="sens-goog">—</span><br>
+          Navo catches (0.471 @ 90% spec): <span style="font-family:var(--mono);color:var(--teal);font-weight:500;" id="sens-navo">—</span><span style="color:var(--teal);font-weight:500;" id="sens-delta">—</span>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.5;">The sensitivity comparison (0.471 vs Google 0.44 vs clinician 0.27) is at 90% specificity — a consistent operating point across all models. Navo's AUC of 0.821 vs Google's 0.69 is the threshold-agnostic comparison. The TN clearance driver separately uses Navo's actual operating specificity of 0.69 from the classification report.</div>
+        <div style="margin-top:8px;background:var(--teal-dim);border:1px solid var(--teal-mid);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.7;" id="sens-note">—</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px;">True negative clearance — normal cases correctly identified</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.7;" id="tn-section">—</div>
+    <div style="margin-top:10px;background:var(--purple-dim);border:1px solid var(--purple-mid);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.7;" id="tn-note">—</div>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 4 — HOSPITAL RECORDS ═══════════ -->
+<div id="tab-hospitals" class="tab-panel">
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <h1>Hospital <em>Value</em><br>Tracking Database</h1>
+        <p class="hero-sub">Every saved configuration from the Value Model. Load any record to restore its inputs, or export all records as CSV for pipeline tracking.</p>
+      </div>
+      <div class="hbadge blue" id="db-hero-badge" style="display:none;"><div class="lbl">Hospitals tracked</div><div class="big" id="db-count">0</div><div class="sub">records in this browser</div></div>
+    </div>
+  </div>
+  <div id="db-content"></div>
+</div>
+
+<div class="toast" id="save-toast"></div>
+
+<footer>
+  <p>© 2026 Navo Health Private Limited · Singapore · For internal and investor use only</p>
+  <p style="margin-top:4px;">All values in USD. Model assumptions are illustrative. Validate with clinical and hospital data before external presentation.</p>
+</footer>
+</div>
+
+<script>
+const TN_RATE = 0.69;
+const SENS_NAVO_90 = 0.471;
+const SENS_CLIN = 0.27;
+const SENS_GOOG = 0.44;
+
+var captureRate = 0.20;
+var V = {};
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleD(id) {
+  const body = document.getElementById(id + '-body');
+  const arrow = document.getElementById(id + '-arrow');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  arrow.textContent = open ? '▸' : '▾';
+}
+
+function g(id) {
+  const el = document.getElementById(id);
+  return el ? (parseFloat(el.value) || 0) : 0;
+}
+function s(id, v) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = v;
+}
+
+function fF(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+function fM(n) { if (n >= 1000000) return '$' + (n / 1000000).toFixed(2) + 'M'; return fF(n); }
+function fK(n) { if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M'; if (n >= 1000) return '$' + Math.round(n / 1000) + 'K'; return '$' + Math.round(n); }
+
+function setCapture(pct, btn) {
+  captureRate = pct / 100;
+  document.querySelectorAll('.cbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  recalc();
+}
+
+function recalc() {
+  var d = g('g-deliveries');
+  var labordur = g('g-labordur');
+
+  var monitormin = g('d1a-monitormin');
+  var survreduction = g('d1a-survreduction') / 100;
+  var nursecost = g('d1a-nursecost');
+  var survHrsPerDel = labordur * (monitormin / 60);
+  V.v1a = d * survHrsPerDel * survreduction * nursecost;
+  s('d1a-value', fF(V.v1a)); s('d1a-hval', fK(V.v1a));
+  s('d1a-formula', d.toLocaleString() + ' del × ' + labordur + 'h × (' + monitormin + '/60) × ' + Math.round(survreduction * 100) + '% saved × $' + nursecost + '/h → ' + fF(V.v1a));
+
+  var esc = g('d1b-escalations');
+  var falserate = g('d1b-falserate') / 100;
+  var esc_red = g('d1b-reduction') / 100;
+  var esccost = g('d1b-esccost');
+  V.v1b = d * esc * falserate * esc_red * esccost;
+  s('d1b-value', fF(V.v1b)); s('d1b-hval', fK(V.v1b));
+  var falseEscAvoided = Math.round(d * esc * falserate * esc_red);
+  s('d1b-formula', d.toLocaleString() + ' del × ' + esc + ' esc × ' + Math.round(falserate * 100) + '% FP × ' + Math.round(esc_red * 100) + '% reduction × $' + esccost + ' → ' + fF(V.v1b));
+
+  var normalrate = g('d1c-normalrate') / 100;
+  var ambigrate = g('d1c-ambigrate') / 100;
+  var workupcost = g('d1c-workupcost');
+  var tnCleared = Math.round(d * normalrate * ambigrate * TN_RATE);
+  V.v1c = tnCleared * workupcost;
+  s('d1c-value', fF(V.v1c)); s('d1c-hval', fK(V.v1c));
+  s('d1c-formula', d.toLocaleString() + ' del × ' + Math.round(normalrate * 100) + '% normal × ' + Math.round(ambigrate * 100) + '% ambiguous × ' + TN_RATE + ' TN rate × $' + workupcost + ' → ' + fF(V.v1c));
+
+  var dEsc = esc; // shared from Driver 1b — same escalation base
+  var disagreerate = g('d1d-disagreerate') / 100;
+  var dis_red = g('d1d-reduction') / 100;
+  var cyclecost = g('d1d-cyclecost');
+  var delay_min = g('d1d-delay');
+  var costpermin = g('d1d-costpermin');
+  var costPerDisagreement = cyclecost + delay_min * costpermin;
+  V.v1d = d * dEsc * disagreerate * dis_red * costPerDisagreement;
+  s('d1d-value', fF(V.v1d)); s('d1d-hval', fK(V.v1d));
+  var disagreeAvoided = Math.round(d * dEsc * disagreerate * dis_red);
+  s('d1d-formula', d.toLocaleString() + ' del × ' + dEsc + ' esc × ' + Math.round(disagreerate * 100) + '% disagreement × ' + Math.round(dis_red * 100) + '% reduction × ($' + cyclecost + ' staff + ' + delay_min + 'min × $' + costpermin + '/min) → ' + fF(V.v1d));
+
+  var ar = g('d3-adverserate');
+  var lc = g('d3-litigcost');
+  var ca = g('d3-ctgattr') / 100;
+  var nr3 = g('d3-navoreduction') / 100;
+  V.v3 = ar * lc * ca * nr3;
+  s('d3-value', fF(V.v3)); s('d3-hval', fK(V.v3));
+  s('d3-formula', ar.toFixed(1) + ' cases × $' + lc.toLocaleString() + ' × ' + Math.round(ca * 100) + '% CTG attr × ' + Math.round(nr3 * 100) + '% reduction → ' + fF(V.v3));
+
+  s('sum-v1a', fF(V.v1a)); s('sum-v1b', fF(V.v1b));
+  s('sum-v1c', fF(V.v1c)); s('sum-v1d', fF(V.v1d));
+  s('sum-v3', fF(V.v3));
+
+  var opsTotal = V.v1a + V.v1b + V.v1c + V.v1d;
+  var total = opsTotal + V.v3;
+  s('total-all', fF(total));
+  s('hero-total', fM(total));
+
+  var fee = total * captureRate, pct = Math.round(captureRate * 100);
+  s('saas-fee', fF(fee) + ' / yr'); s('saas-monthly', fF(fee / 12) + ' / mo'); s('saas-arr', fM(fee * 10));
+  document.getElementById('capture-note').innerHTML = 'At <span>' + pct + '% value capture</span>, Navo retains <span>' + fF(fee) + ' per site per year</span>. The remaining ' + (100 - pct) + '% (' + fF(total - fee) + ') stays with the hospital — a net-positive for procurement.';
+
+  updateImpact(d, labordur, monitormin, survreduction, nursecost, esc, falserate, esc_red, esccost, normalrate, ambigrate, workupcost, dEsc, disagreerate, dis_red, cyclecost, delay_min, costpermin, ar, lc, ca, nr3, opsTotal, total, tnCleared, falseEscAvoided, disagreeAvoided);
+}
+
+function updateImpact(d, labordur, monitormin, survreduction, nursecost, esc, falserate, esc_red, esccost, normalrate, ambigrate, workupcost, dEsc, disagreerate, dis_red, cyclecost, delay_min, costpermin, ar, lc, ca, nr3, opsTotal, total, tnCleared, falseEscAvoided, disagreeAvoided) {
+  var atRisk = Math.round(d * (1 - normalrate));
+  var navoCaught_90 = Math.round(atRisk * SENS_NAVO_90);
+  var clinCaught = Math.round(atRisk * SENS_CLIN);
+  var googCaught = Math.round(atRisk * SENS_GOOG);
+  var delta_90 = navoCaught_90 - clinCaught;
+  var normalCases = Math.round(d * normalrate);
+  var tnTotal = Math.round(normalCases * TN_RATE);
+  var survHrsBefore = (labordur * (monitormin / 60)).toFixed(1);
+  var survHrsAfter = (labordur * (monitormin / 60) * (1 - survreduction)).toFixed(1);
+  var escFPBefore = (esc * falserate).toFixed(1);
+  var escFPAfter = (esc * falserate * (1 - esc_red)).toFixed(1);
+  var disBefore = (esc * disagreerate).toFixed(1);
+  var disAfter = (dEsc * disagreerate * (1 - dis_red)).toFixed(1);
+
+  s('imp-ops', fF(opsTotal));
+  s('imp-v3', fF(V.v3));
+  s('imp-total', fF(total));
+  s('imp-cases', delta_90 + ' more acidotic cases @ 90% spec vs clinician');
+  s('imp-sub', 'USD — cost savings only');
+
+  s('ba-surv-b', survHrsBefore + ' hrs / episode');
+  s('ba-esc-b', escFPBefore + ' unnecessary / episode');
+  s('ba-dis-b', disBefore + ' per episode');
+  s('ba-delay-b', delay_min + ' min avg');
+  s('ba-cost-b', fF(total) + ' avoidable');
+  s('ba-surv-a', survHrsAfter + ' hrs (−' + Math.round(survreduction * 100) + '% via AI triage)');
+  s('ba-esc-a', escFPAfter + ' unnecessary (−' + Math.round(esc_red * 100) + '%)');
+  s('ba-tn-a', tnCleared + ' cases auto-cleared (TN rate ' + TN_RATE + ')');
+  s('ba-dis-a', disAfter + ' per episode (−' + Math.round(dis_red * 100) + '%)');
+  s('ba-val-a', fF(total));
+
+  s('op1l', d.toLocaleString() + ' del × ' + survHrsBefore + 'h/ep × ' + Math.round(survreduction * 100) + '% freed × $' + nursecost + '/h');
+  s('op1v', fF(V.v1a));
+  s('op2l', falseEscAvoided.toLocaleString() + ' false escalations avoided × $' + esccost);
+  s('op2v', fF(V.v1b));
+  s('op3l', tnCleared.toLocaleString() + ' ambiguous-normal cases cleared (TN ' + TN_RATE + ') × $' + workupcost);
+  s('op3v', fF(V.v1c));
+  s('op4l', disagreeAvoided.toLocaleString() + ' disagreements avoided × ($' + cyclecost + ' + ' + delay_min + 'min × $' + costpermin + '/min)');
+  s('op4v', fF(V.v1d));
+
+  s('cl1l', delta_90 + ' more acidotic cases detected vs clinician (' + SENS_NAVO_90 + ' vs ' + SENS_CLIN + ' @ 90% spec) → litigation avoidance');
+  s('cl1v', fF(V.v3));
+
+  var drivers = [
+    { l: '1a · Nursing surveillance', v: V.v1a, col: 'rgba(37,99,168,0.22)', tc: '#2563a8' },
+    { l: '1b · Alert fatigue & escalations', v: V.v1b, col: 'rgba(37,99,168,0.38)', tc: '#2563a8' },
+    { l: '1c · True negative clearance', v: V.v1c, col: 'rgba(91,63,168,0.22)', tc: '#5b3fa8' },
+    { l: '1d · Comms inconsistency & delay', v: V.v1d, col: 'rgba(91,63,168,0.38)', tc: '#5b3fa8' },
+    { l: '2 · Adverse outcome & litigation', v: V.v3, col: 'rgba(14,143,114,0.28)', tc: '#0e8f72' },
+  ];
+  var html = '';
+  drivers.forEach(function (d2) {
+    var w = Math.max(total > 0 ? (d2.v / total * 100) : 0, 2).toFixed(1);
+    html += '<div class="wf-row">'
+      + '<div class="wf-label">' + d2.l + '</div>'
+      + '<div class="wf-track"><div class="wf-fill" style="width:' + w + '%;background:' + d2.col + ';"></div></div>'
+      + '<div class="wf-amt" style="color:' + d2.tc + ';">' + fK(d2.v) + '</div>'
+      + '</div>';
+  });
+  html += '<div style="height:4px;"></div>';
+  html += '<div class="wf-row">'
+    + '<div class="wf-label" style="font-weight:500;color:var(--text);">Total / hospital / yr</div>'
+    + '<div class="wf-track"><div class="wf-fill" style="width:100%;background:var(--teal);"></div></div>'
+    + '<div class="wf-amt" style="color:var(--teal);font-size:13px;">' + fK(total) + '</div>'
+    + '</div>';
+  document.getElementById('waterfall-rows').innerHTML = html;
+
+  s('sens-header', 'At ' + d.toLocaleString() + ' deliveries / year (' + Math.round((1 - normalrate) * 100) + '% acidotic prevalence = ' + atRisk.toLocaleString() + ' at-risk cases)');
+  s('sens-clin', clinCaught + ' cases');
+  s('sens-goog', googCaught + ' cases');
+  s('sens-navo', navoCaught_90 + ' cases');
+  s('sens-delta', ' — +' + delta_90 + ' vs clinician @ 90% spec');
+  var sensLitigValue = delta_90 * lc * ca * nr3;
+  document.getElementById('sens-note').innerHTML = 'At 90% specificity, Navo detects ' + delta_90 + ' more acidotic cases per year vs a clinician. At ' + fK(lc) + ' average litigation cost (' + Math.round(ca * 100) + '% CTG attribution, ' + Math.round(nr3 * 100) + '% Navo reduction), this is captured as <strong style="color:var(--teal);">' + fF(sensLitigValue) + ' / yr</strong> in risk-adjusted litigation savings. (' + delta_90 + ' cases × ' + fK(lc) + ' × ' + Math.round(ca * 100) + '% × ' + Math.round(nr3 * 100) + '%)';
+
+  document.getElementById('tn-section').innerHTML = d.toLocaleString() + ' deliveries × ' + Math.round(normalrate * 100) + '% normal = ' + normalCases.toLocaleString() + ' normal cases / yr. Navo\'s actual specificity of <strong style="color:var(--purple);">' + TN_RATE + '</strong> (classification report: 37/54) correctly clears <strong style="color:var(--purple);">' + tnTotal.toLocaleString() + ' normal cases per year</strong>. Of those, <strong>' + tnCleared.toLocaleString() + '</strong> fall in the ambiguous-but-normal subset where unnecessary workup would otherwise occur (Driver 1c).';
+  document.getElementById('tn-note').innerHTML = 'At $' + workupcost + ' per avoided workup × ' + tnCleared.toLocaleString() + ' cleared = <strong style="color:var(--purple);">' + fF(V.v1c) + ' / yr</strong>. Note: the TN clearance driver uses the default-threshold specificity (0.69), while the sensitivity comparison above uses the 90% specificity operating point — two different threshold settings of the same model.';
+}
+
+recalc();
+
+// ─── Hospital Records Database ───────────────────────────────────────────────
+
+var DB_KEY = 'navoHospitalRecords';
+
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem(DB_KEY)) || []; } catch(e) { return []; }
+}
+function setRecords(recs) { localStorage.setItem(DB_KEY, JSON.stringify(recs)); }
+
+function saveHospital() {
+  var name = (document.getElementById('g-hospital-name').value || '').trim() || 'Unnamed Hospital';
+  var opsTotal = (V.v1a||0) + (V.v1b||0) + (V.v1c||0) + (V.v1d||0);
+  var total = opsTotal + (V.v3||0);
+  var rec = {
+    id: Date.now(),
+    name: name,
+    date: new Date().toISOString(),
+    captureRate: captureRate,
+    inputs: {
+      deliveries: g('g-deliveries'), labordur: g('g-labordur'),
+      monitormin: g('d1a-monitormin'), survreduction: g('d1a-survreduction'), nursecost: g('d1a-nursecost'),
+      escalations: g('d1b-escalations'), falserate: g('d1b-falserate'), reduction1b: g('d1b-reduction'), esccost: g('d1b-esccost'),
+      normalrate: g('d1c-normalrate'), ambigrate: g('d1c-ambigrate'), workupcost: g('d1c-workupcost'),
+      disagreerate: g('d1d-disagreerate'), reduction1d: g('d1d-reduction'), cyclecost: g('d1d-cyclecost'), delay: g('d1d-delay'), costpermin: g('d1d-costpermin'),
+      adverserate: g('d3-adverserate'), litigcost: g('d3-litigcost'), ctgattr: g('d3-ctgattr'), navoreduction: g('d3-navoreduction')
+    },
+    values: { v1a: V.v1a, v1b: V.v1b, v1c: V.v1c, v1d: V.v1d, v3: V.v3, opsTotal: opsTotal, total: total, saasFee: total * captureRate }
+  };
+  var recs = getRecords();
+  recs.unshift(rec);
+  setRecords(recs);
+  showToast('Record saved for ' + name);
+  renderRecords();
+}
+
+function showToast(msg) {
+  var t = document.getElementById('save-toast');
+  t.textContent = msg + ' ✓';
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+function loadRecord(id) {
+  var rec = getRecords().find(function(r) { return r.id === id; });
+  if (!rec) return;
+  var i = rec.inputs;
+  function sv(elId, val) { var el = document.getElementById(elId); if (el) el.value = val; }
+  document.getElementById('g-hospital-name').value = rec.name;
+  sv('g-deliveries', i.deliveries); sv('g-labordur', i.labordur);
+  sv('d1a-monitormin', i.monitormin); sv('d1a-survreduction', i.survreduction); sv('d1a-nursecost', i.nursecost);
+  sv('d1b-escalations', i.escalations); sv('d1b-falserate', i.falserate); sv('d1b-reduction', i.reduction1b); sv('d1b-esccost', i.esccost);
+  sv('d1c-normalrate', i.normalrate); sv('d1c-ambigrate', i.ambigrate); sv('d1c-workupcost', i.workupcost);
+  sv('d1d-disagreerate', i.disagreerate); sv('d1d-reduction', i.reduction1d); sv('d1d-cyclecost', i.cyclecost); sv('d1d-delay', i.delay); sv('d1d-costpermin', i.costpermin);
+  sv('d3-adverserate', i.adverserate); sv('d3-litigcost', i.litigcost); sv('d3-ctgattr', i.ctgattr); sv('d3-navoreduction', i.navoreduction);
+  captureRate = rec.captureRate;
+  document.querySelectorAll('.cbtn').forEach(function(b) {
+    b.classList.toggle('active', parseInt(b.textContent) === Math.round(rec.captureRate * 100));
+  });
+  recalc();
+  switchTab('value', document.querySelectorAll('.tab-btn')[1]);
+  showToast('Loaded ' + rec.name);
+}
+
+function deleteRecord(id) {
+  var recs = getRecords();
+  var rec = recs.find(function(r) { return r.id === id; });
+  if (rec && !confirm('Delete record for "' + rec.name + '"?')) return;
+  setRecords(recs.filter(function(r) { return r.id !== id; }));
+  renderRecords();
+}
+
+function exportCSV() {
+  var recs = getRecords();
+  if (!recs.length) return;
+  var headers = ['Hospital','Date','Deliveries','Labor Dur (h)','Monitor Min/h','Surv Reduction %','Nurse Cost/h','Escalations','False Esc %','Esc Reduction %','Esc Cost','Normal Rate %','Ambig Rate %','Workup Cost','Disagree Rate %','Dis Reduction %','Cycle Cost','Delay Min','Cost/Min','Adverse Cases','Litig Cost','CTG Attr %','Navo Reduction %','Ops Value','Litigation Value','Total Value','Capture %','SaaS Fee'];
+  var rows = recs.map(function(r) {
+    var inp = r.inputs, v = r.values;
+    return [
+      '"' + r.name.replace(/"/g,'""') + '"',
+      new Date(r.date).toLocaleDateString('en-GB'),
+      inp.deliveries, inp.labordur, inp.monitormin, inp.survreduction, inp.nursecost,
+      inp.escalations, inp.falserate, inp.reduction1b, inp.esccost,
+      inp.normalrate, inp.ambigrate, inp.workupcost,
+      inp.disagreerate, inp.reduction1d, inp.cyclecost, inp.delay, inp.costpermin,
+      inp.adverserate, inp.litigcost, inp.ctgattr, inp.navoreduction,
+      Math.round(v.opsTotal), Math.round(v.v3), Math.round(v.total),
+      Math.round(r.captureRate * 100), Math.round(v.saasFee)
+    ].join(',');
+  });
+  var csv = [headers.join(',')].concat(rows).join('\n');
+  var a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'navo-hospital-records-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderRecords() {
+  var recs = getRecords();
+  var el = document.getElementById('db-content');
+  if (!el) return;
+
+  // update hero badge
+  var badge = document.getElementById('db-hero-badge');
+  var countEl = document.getElementById('db-count');
+  if (badge) badge.style.display = recs.length ? '' : 'none';
+  if (countEl) countEl.textContent = recs.length;
+
+  // update nav badge count
+  var navBtn = document.getElementById('tab-btn-hospitals');
+  if (navBtn) navBtn.textContent = 'Hospital Records' + (recs.length ? ' (' + recs.length + ')' : '');
+
+  if (!recs.length) {
+    el.innerHTML = '<div class="db-empty"><div class="big">No records yet</div><p>Fill in the Value Model for a hospital, add its name in the Hospital Profile, then click <strong>Save Hospital Record</strong> to start your database.</p></div>';
+    return;
+  }
+
+  var avgTotal = recs.reduce(function(s,r){ return s + r.values.total; }, 0) / recs.length;
+  var maxRec = recs.reduce(function(a,b){ return b.values.total > a.values.total ? b : a; }, recs[0]);
+  var statsHtml = '<div class="db-stats">'
+    + '<div class="scard"><div class="lbl">Hospitals tracked</div><div class="val">' + recs.length + '</div></div>'
+    + '<div class="scard"><div class="lbl">Avg total value / yr</div><div class="val" style="font-size:18px;">' + fK(avgTotal) + '</div></div>'
+    + '<div class="scard hl"><div class="lbl">Highest value — ' + escHtml(maxRec.name) + '</div><div class="val" style="font-size:18px;">' + fK(maxRec.values.total) + '</div></div>'
+    + '</div>';
+
+  var rows = recs.map(function(r) {
+    var date = new Date(r.date).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
+    return '<tr>'
+      + '<td class="rec-name">' + escHtml(r.name) + '</td>'
+      + '<td style="color:var(--text3);font-size:12px;">' + date + '</td>'
+      + '<td style="font-family:var(--mono);color:var(--text2);">' + Math.round(r.inputs.deliveries).toLocaleString() + '</td>'
+      + '<td style="font-family:var(--mono);color:var(--blue);">' + fK(r.values.opsTotal) + '</td>'
+      + '<td style="font-family:var(--mono);color:var(--teal);">' + fK(r.values.v3) + '</td>'
+      + '<td class="rec-total">' + fK(r.values.total) + '</td>'
+      + '<td style="font-family:var(--mono);color:var(--text2);">' + Math.round(r.captureRate * 100) + '%</td>'
+      + '<td style="font-family:var(--mono);color:var(--purple);">' + fK(r.values.saasFee) + '</td>'
+      + '<td style="white-space:nowrap;">'
+      + '<button class="rec-action rec-load" onclick="loadRecord(' + r.id + ')">Load</button>'
+      + '<button class="rec-action rec-del" onclick="deleteRecord(' + r.id + ')">Delete</button>'
+      + '</td>'
+      + '</tr>';
+  }).join('');
+
+  var tableHtml = '<div class="section" style="overflow-x:auto;">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">'
+    + '<div style="font-size:13px;font-weight:500;color:var(--text);">' + recs.length + ' hospital record' + (recs.length !== 1 ? 's' : '') + '</div>'
+    + '<button class="export-btn" onclick="exportCSV()">Export CSV ↓</button>'
+    + '</div>'
+    + '<table class="rec-table"><thead><tr>'
+    + '<th>Hospital</th><th>Saved</th><th>Deliveries</th><th>Ops Value</th><th>Litigation</th><th>Total / yr</th><th>Capture</th><th>SaaS Fee</th><th></th>'
+    + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+
+  el.innerHTML = statsHtml + tableHtml;
+}
+
+renderRecords();
+</script>
+</body>
+</html>
